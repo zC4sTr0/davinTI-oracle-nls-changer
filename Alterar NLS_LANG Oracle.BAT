@@ -1,1 +1,0 @@
-REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /V NLS_LANG /T REG_SZ /F /D AMERICAN_AMERICA.WE8ISO8859P1
