@@ -4,6 +4,7 @@ setlocal enabledelayedexpansion
 set "searchValue=NLS_LANG"
 set "regKey=HKLM\SOFTWARE\Oracle"
 set "foundKey="
+set "OraclePath=%ORACLE_HOME%"
 
 for /f "tokens=1,2*" %%A in ('reg query "%regKey%" /s /v "%searchValue%" ^| findstr /i "%searchValue%"') do (
     set "foundKey=%%A"
@@ -25,9 +26,14 @@ for /f "tokens=1,2*" %%A in ('reg query "%regKey%" /s /v "%searchValue%" ^| find
 
 
 if not defined foundKey (
-    echo Nenhum local correspondente encontrado. Criado variável de ambiente: em "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
+    echo Nao foi encontrado um registro do OracleClient. Será criado variável de ambiente para o PLSQL em "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
+    REG ADD "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /V NLS_LANG /T REG_SZ /F /D AMERICAN_AMERICA.WE8ISO8859P1
+    echo %OraclePath%
+    echo NLS_LANG=AMERICAN_AMERICA.WE8ISO8859P1 > "%OraclePath%/network/admin/sqlnet.ora"
+    echo NLS_LANG configurado!
+
 ) else (
-REG ADD "%foundKeyOracle%" /V NLS_LANG /T REG_SZ /F /D AMERICAN_AMERICA.WE8ISO8859P1
+    REG ADD "%foundKeyOracle%" /V NLS_LANG /T REG_SZ /F /D AMERICAN_AMERICA.WE8ISO8859P1
 )
 
 pause
